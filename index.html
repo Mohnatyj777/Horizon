@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Horizon — Купити монети ЗСУ та електричну мухобійку</title>
+  <meta name="description" content="Купити монети ЗСУ, набір монет ЗСУ, електричну мухобійку. Офіційний продавець з гарантією якості. Замовляйте онлайн у Horizon." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("uSvEmLWeL1TtTV2Hd");
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #000000, #ff6600);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #111;
+    }
+    .brand {
+      font-size: 24px;
+      font-weight: bold;
+      color: orange;
+    }
+    .phone {
+      font-size: 20px;
+      cursor: pointer;
+      user-select: all;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cart-icon {
+      cursor: pointer;
+      font-size: 18px;
+      position: relative;
+    }
+    .cart-count {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
+      text-align: center;
+      line-height: 20px;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .product {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.2s;
+      cursor: pointer;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product:hover {
+      transform: scale(1.05);
+    }
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+    .product h3 {
+      margin: 10px 0 5px;
+    }
+    .product p {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .product button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: orange;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .product button.in-cart {
+      background-color: white;
+      color: black;
+    }
+    .cart-window {
+      position: fixed;
+      right: 20px;
+      top: 80px;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1000;
+    }
+    .checkout-form {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 30px 40px;
+      border-radius: 10px;
+      max-width: 700px;
+      width: 90%;
+      z-index: 2000;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .checkout-form h3 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    .checkout-form input,
+    .checkout-form select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .checkout-form button[type="submit"] {
+      display: block;
+      margin: 30px auto 0;
+      padding: 15px 40px;
+      font-size: 20px;
+      background-color: orange;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: black;
+      transition: background-color 0.3s ease;
+    }
+    .checkout-form button[type="submit"]:hover {
+      background-color: #e65c00;
+    }
+    .footer {
+      background-color: #111;
+      text-align: center;
+      padding: 15px;
+      margin-top: auto;
+    }
+    .viber-telegram a {
+      font-size: 24px;
+    }
+    #cardInfo {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Horizon</div>
+    <div class="phone" onclick="copyPhoneNumber()">
+      +380685101754
+      <div class="viber-telegram">
+        <a href="viber://chat?number=%2B380685101754" target="_blank" title="Viber">
+          <i class="fab fa-viber" style="color:#7360f2;"></i>
+        </a>
+        <a href="https://t.me/+380685101754" target="_blank" title="Telegram">
+          <i class="fab fa-telegram" style="color:#0088cc;"></i>
+        </a>
+      </div>
+    </div>
+    <div class="cart-icon" onclick="toggleCart()">
+      🛒 Кошик <span id="cartCount" class="cart-count">0</span>
+    </div>
+  </header>
+
+  <main id="productList"></main>
+
+  <div class="cart-window" id="cartWindow">
+    <button class="close-btn" onclick="toggleCart()" style="float:right; font-size:18px; border:none; background:none; cursor:pointer;">×</button>
+    <h2>Ваш кошик</h2>
+    <div id="cartItems"></div>
+    <p id="cartTotal">Сума: 0 грн</p>
+    <button onclick="showCheckoutForm()">Оформити замовлення</button>
+  </div>
+
+  <div id="checkoutSection"></div>
+
+  <div class="footer">
+    &copy; 2025 Horizon. Усі права захищені.
+  </div>
+
+  <script>
+    const cart = [];
+    const products = [
+      {
+        name: "Набір монет БЕЗ капсул",
+        price: 190,
+        image: "coins_no_capsules.jpg",
+        desc: "10 монет. Без капсул. З ролів, в обігу не були. ТРО, Підтримка, ППО, Антонівський міст, Об’єднані сили, Спецтранспорт, Медики, Зв’язок, Логістика, Нацгвардія."
+      },
+      {
+        name: "Набір монет З КАПСУЛАМИ",
+        price: 245,
+        image: "coins_with_capsules.jpg",
+        desc: "10 монет. У капсулах. З ролів, в обігу не були. ТРО, Підтримка, ППО, Антонівський міст, Об’єднані сили, Спецтранспорт, Медики, Зв’язок, Логістика, Нацгвардія."
+      },
+      {
+        name: "Електрична мухобійка",
+        price: 375,
+        image: "flyswatter.jpg",
+        desc: "Потужна та безпечна електрична мухобійка для ефективної боротьби з комахами."
+      }
+    ];
+
+    function renderProducts() {
+      const container = document.getElementById("productList");
+      container.innerHTML = "";
+      products.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <h3>${p.name}</h3>
+          <p>${p.desc}</p>
+          <img src="${p.image}" alt="${p.name}" />
+          <button onclick="addToCart(event, '${p.name}', ${p.price}, this)">Купити — ${p.price} грн</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function copyPhoneNumber() {
+      navigator.clipboard.writeText('+380685101754');
+      alert('Номер скопійовано: +380685101754');
+    }
+
+    function toggleCart() {
+      const cartWindow = document.getElementById('cartWindow');
+      cartWindow.style.display = cartWindow.style.display === 'block' ? 'none' : 'block';
+      renderCart();
+    }
+
+    function addToCart(event, name, price, button) {
+      event.stopPropagation();
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ name, price, qty: 1 });
+        if (button) {
+          button.textContent = 'У кошику';
+          button.classList.add('in-cart');
+        }
+      }
+      document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const total = document.getElementById('cartTotal');
+      container.innerHTML = '';
+      let sum = 0;
+      cart.forEach((item, index) => {
+        sum += item.price * item.qty;
+        container.innerHTML += `
+          <div>
+            ${item.name} — ${item.qty} шт. (${item.price * item.qty} грн)
+            <button onclick="changeQty(${index}, 1)">+</button>
+            <button onclick="changeQty(${index}, -1)">–</button>
+          </div>
+        `;
+      });
+      total.textContent = `Сума: ${sum} грн`;
+    }
+
+    function changeQty(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+      renderCart();
+    }
+
+    function showCheckoutForm() {
+      let form = `
+        <div class="checkout-form">
+          <h3>Оформити замовлення</h3>
+          <form onsubmit="sendOrder(event)">
+            <input type="text" name="lastname" placeholder="Прізвище" required />
+            <input type="text" name="firstname" placeholder="Ім’я" required />
+            <input type="text" name="city" placeholder="Місто/Село" required />
+            <input type="tel" name="phone" placeholder="Номер телефону" required />
+            <select name="delivery" onchange="toggleDelivery(this.value)">
+              <option value="nova">Нова Пошта</option>
+              <option value="ukr">Укрпошта</option>
+            </select>
+            <input type="text" id="deliveryValue" name="deliveryValue" placeholder="Відділення / ID" required />
+            <select name="payment" onchange="togglePayment(this.value)">
+              <option value="cod">Накладений платіж</option>
+              <option value="card">Оплата карткою</option>
+            </select>
+            <div id="cardInfo" onclick="copyCard()">Номер картки: 4441114435433634</div>
+            <button type="submit">Надіслати замовлення</button>
+          </form>
+        </div>
+      `;
+      document.getElementById('checkoutSection').innerHTML = form;
+    }
+
+    function toggleDelivery(method) {
+      const input = document.getElementById('deliveryValue');
+      input.placeholder = method === 'ukr' ? 'ID Укрпошти' : 'Відділення Нової Пошти';
+    }
+
+    function togglePayment(value) {
+      const cardDiv = document.getElementById('cardInfo');
+      cardDiv.style.display = value === 'card' ? 'block' : 'none';
+    }
+
+    function copyCard() {
+      navigator.clipboard.writeText('4441114435433634');
+      alert('Номер картки скопійовано!');
+    }
+
+    function sendOrder(event) {
+      event.preventDefault();
+      const form = event.target;
+      if(cart.length === 0) {
+        alert('Ваш кошик порожній!');
+        return;
+      }
+      const data = {
+        lastname: form.lastname.value,
+        firstname: form.firstname.value,
+        city: form.city.value,
+        phone: form.phone.value,
+        delivery: form.delivery.value,
+        deliveryValue: form.deliveryValue.value,
+        payment: form.payment.value,
+        items: cart.map(i => `${i.name} — ${i.qty} шт.`).join(', ')
+      };
+
+      emailjs.send("service_a6fc79v", "template_u05u4cg", data, "uSvEmLWeL1TtTV2Hd")
+        .then(() => {
+          alert("Замовлення успішно надіслано!");
+          cart.length = 0;
+          document.getElementById('cartCount').textContent = '0';
+          document.getElementById('checkoutSection').innerHTML = '';
+          document.getElementById('cartWindow').style.display = 'none';
+          // Оновлення кнопок "Купити" назад, якщо хочеш
+          const buttons = document.querySelectorAll('.product button.in-cart');
+          buttons.forEach(btn => {
+            btn.textContent = btn.textContent.replace('У кошику', 'Купити — ' + btn.getAttribute('data-price'));
+            btn.classList.remove('in-cart');
+          });
+          renderProducts();
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Помилка надсилання замовлення. Спробуйте ще раз.");
+        });
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
